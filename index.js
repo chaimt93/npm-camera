@@ -1,9 +1,16 @@
 let video = null;
+let videoSize = {};
+let isMobile;
+
 async function init() {
     try {
-        const srcObject = await navigator.mediaDevices.getUserMedia({video: true, audio: true});
+        const stream = await navigator.mediaDevices.getUserMedia({video: true});
+        let {width, height} = stream.getTracks()[0].getSettings();
+        isMobile= width>height
+        videoSize.width = width
+        videoSize.height = height
         video = createVideo();
-        video.srcObject = srcObject;
+        video.srcObject = stream;
         document.body.appendChild(video);
         return true
     } catch (e) {
@@ -11,12 +18,9 @@ async function init() {
     }
 }
 
-
 function createVideo() {
     const video = document.createElement("video");
     video.id = "selfieVideo";
-    video.style.width = "400";
-    video.style.height = "800";
     video.style.webkitTransform = "scaleX(-1);";
     video.style.transform = "scaleX(-1)";
     video.autoplay = true;
@@ -24,12 +28,12 @@ function createVideo() {
 }
 
 function snap() {
-    const {videoWidth, videoHeight} = {videoWidth:400, videoHeight:800};
     const canvas = document.createElement("canvas");
-    canvas.width = videoWidth;
-    canvas.height = videoHeight;
+    canvas.width = videoSize.width;
+    canvas.height = videoSize.height;
     const context = canvas.getContext("2d");
-    const drawImageParameters = this.generateDrawImageParameters(canvas, videoWidth, videoHeight);
+    const drawImageParameters = this.generateDrawImageParameters(canvas, canvas.width, canvas.height);
+    console.log(drawImageParameters)
     context.scale(-1, 1);
     context.drawImage(video, ...drawImageParameters);
     const imageBase64 = canvas.toDataURL("image/png");
@@ -37,11 +41,11 @@ function snap() {
 }
 
 function generateDrawImageParameters(canvas, videoWidth, videoHeight) {
-    if (videoWidth < videoHeight) return [0, 0, canvas.width, canvas.height, 0, 0, canvas.width * -1, canvas.height];
-    return [Math.floor((videoWidth - canvas.width) / 2), 0, canvas.width, videoHeight, 0, 0, canvas.width * -1, videoHeight]
+    if (isMobile) return [0, 0, videoWidth, videoHeight, 0, 0, -videoWidth, videoHeight];
+
+    // if (isMobile) return [0, 0, canvas.width, canvas.height, 0, 0, canvas.width * -1, canvas.height];
+    return [0, 0, videoWidth, videoHeight, 0, 0, -videoWidth, videoHeight]
 }
-
-
 
 
 function createSelfieVideo() {
