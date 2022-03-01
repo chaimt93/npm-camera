@@ -21,10 +21,13 @@ import camera from 'simple-web-cam';
 await camera.init();
 ```
 
-#### 3. Snap!
+#### 3. Snap: you got three options
 ``` js
-const base64string = camera.snap();
-// base64string can be an image src, or can be downloaded;
+1. snap and download file:  await camera.snap_download(fileName);
+
+2. snap and get file back:  const file = await camera.snap_get_file(type /*png etc'*/);
+
+3. snap and get base64 string:  camera.snap_get_base64();
 ```
 
 
@@ -34,7 +37,7 @@ const style = {
 border:'2px solid black',
 clipPath:'circle(40%)',
 }
-camera.setStyle(style)
+camera.set_video_style(style)
 ```
 
 

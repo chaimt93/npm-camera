@@ -1,4 +1,3 @@
-/* eslint-disable */
 let video = null;
 let stream = null;
 let videoSize = {};
@@ -19,6 +18,26 @@ async function init() {
         console.error(e)
     }
 }
+
+function snap_get_base64() {
+    return snap()
+}
+
+async function snap_get_file(type) {
+    const base64 = snap();
+    const res = await fetch(base64);
+    const buf =  res.arrayBuffer();
+    return new File([buf], 'filename', {type});
+}
+
+async function snap_download(fileName) {
+    const ImageBase64 = snap()
+    const a = document.createElement("a");
+    a.href = ImageBase64;
+    a.download = fileName || "Image.png";
+    a.click();
+}
+
 function snap() {
     const canvas = document.createElement("canvas");
     canvas.width = videoSize.width;
@@ -30,24 +49,30 @@ function snap() {
     const imageBase64 = canvas.toDataURL("image/png");
     return imageBase64.slice()
 }
-function stop(){
-    stream.getTracks().forEach(track => track.stop())
+
+function stop() {
+    stream.getTracks().forEach(track => track.stop());
+    const element = document.getElementById("simple-web-cam-video")
+    if (element) document.body.removeChild(element)
 }
-function setStyle(style){
-    if (!style)return;
-    Object.keys(style).forEach(key=>{
+
+function set_video_style(style) {
+    if (!style) return;
+    Object.keys(style).forEach(key => {
         video.style[key] = style[key]
     })
 
 }
+
 function createVideo() {
     const video = document.createElement("video");
-    video.id = "selfieVideo";
+    video.id = "simple-web-cam-video";
     video.style.webkitTransform = "scaleX(-1);";
     video.style.transform = "scaleX(-1)";
     video.autoplay = true;
     return video;
 }
+
 function generateDrawImageParameters(canvas, videoWidth, videoHeight) {
     if (isMobile) return [0, 0, videoWidth, videoHeight, 0, 0, -videoWidth, videoHeight];
     return [0, 0, videoWidth, videoHeight, 0, 0, -videoWidth, videoHeight]
@@ -55,6 +80,10 @@ function generateDrawImageParameters(canvas, videoWidth, videoHeight) {
 
 
 export default {
-    init, snap, stop ,setStyle
+    init,
+    snap_get_base64,
+    snap_get_file,
+    snap_download,
+    stop,
+    set_video_style
 }
-/* eslint-disable */
