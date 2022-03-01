@@ -21,7 +21,16 @@ import camera from 'simple-web-cam';
 await camera.init();
 ```
 
-#### 3. Snap: you got three options
+#### 3. style (optional)
+``` js
+const style = {
+border:'2px solid black',
+clipPath:'circle(40%)',
+}
+camera.set_video_style(style)
+```
+
+#### 4. Snap: you got three options
 ``` js
 1. snap and download file:  await camera.snap_download(fileName);
 
@@ -30,15 +39,6 @@ await camera.init();
 3. snap and get base64 string:  camera.snap_get_base64();
 ```
 
-
-#### 4. style (optional)
-``` js
-const style = {
-border:'2px solid black',
-clipPath:'circle(40%)',
-}
-camera.set_video_style(style)
-```
 
 
 #### 5. Stop Webcam
